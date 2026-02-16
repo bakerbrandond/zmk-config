@@ -15,15 +15,6 @@
 #define RAS 2
 #define FUN 3
 
-// homerow mods
-ZMK_BEHAVIOR(hrm, hold_tap,
-    flavor = "balanced";
-    tapping-term-ms = <280>;
-    quick-tap-ms = <125>;
-    global-quick-tap;
-    bindings = <&kp>, <&kp>;
-)
-
 / {
         keymap {
                 compatible = "zmk,keymap";
