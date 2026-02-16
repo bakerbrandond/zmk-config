@@ -26,6 +26,14 @@
 #define ___ &trans
 
 / {
+        conditional_layers {
+            compatible = "zmk,conditional-layers";
+            tri_layer {
+                        if-layers = <LOW RAS>;
+                        then-layer = <FUN>;
+                    };
+        };
+
         keymap {
                 compatible = "zmk,keymap";
 
