@@ -15,15 +15,15 @@
 
 #define _BT_SEL_KEYS_ ___ &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bt BT_CLR
 
-#include "behaviors.dtsi"
-
-#define ___ &trans
-
 #define DEF 0  // layer shortcuts, must match order in which they are defined below
 #define LOW 1
 #define RAS 2
 #define FUN 3
 #define MOS 4
+
+#include "behaviors.dtsi"
+
+#define ___ &trans
 
 / {
         keymap {
@@ -37,9 +37,9 @@
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
              ___       &hrm LCTRL A   &hrm LGUI S   &hrm LALT D  &hrm LSHFT F      &kp G             &kp H      &hrm RSHFT J  &hrm RALT K   &hrm RGUI L   &hrm RCTRL SEMI  ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-             ___            &kp Z         &kp X         &kp C         &kp V         &kp B             &kp N         &kp M      &kp COMMA     &kp DOT       &kp FSLH        ___
+             ___            &kp Z         &kp X         &kp C         &kp V        &kp B             &kp N         &kp M       &kp COMMA     &kp DOT       &kp FSLH        ___
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-                                                      &kp LCTRL       &mo LOW       &kp SPACE         &kp BSPC      &mo RAS      &sk LSHFT
+                                                      &kp LCTRL       &td0         &kp SPACE         &kp BSPC      &mo RAS      &sk LSHFT
      //                                           ╰─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────╯
                         >;
                 };
