@@ -1,0 +1,19 @@
+// homerow mods
+/ {
+    hrm: hrm {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <280>;
+            quick-tap-ms = <125>;
+            global-quick-tap;
+            bindings = <&kp>, <&kp>;
+        };
+
+    td0: tap_dance_0 {
+            compatible = "zmk,behavior-tap-dance";
+            #binding-cells = <0>;
+            tapping-term-ms = <200>;
+            bindings = <&mo LOW>, <&mo MOS>, <&tog MOS>;
+        };
+};
