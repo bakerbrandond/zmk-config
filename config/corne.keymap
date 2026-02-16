@@ -26,16 +26,6 @@
 #define ___ &trans
 
 / {
-        soft_off_pin: soft_off_pin {
-            compatible = "zmk,kscan-sideband-behaviors";
-            wakeup-source;
-            kscan = <&kscan0>;
-            extra-gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
-            soft_off {
-              behavior = <&soft_off>;
-            };
-        };
-
         conditional_layers {
             compatible = "zmk,conditional-layers";
             tri_layer {
