@@ -12,6 +12,8 @@
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 20    // default: 10
 
 #include <dt-bindings/zmk/pointing.h>
+#include <behaviors/anti_idle_mode.dtsi>
+#include <dt-bindings/anti_idle_mode.h>
 
 #define _BT_SEL_KEYS_ ___ &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4 &bt BT_CLR
 
@@ -26,6 +28,14 @@
 #define ___ &trans
 
 / {
+        anti_idle {
+                compatible = "zmk,anti-idle-generic";
+                interval-ms = <30000>;
+                bindings = <&mmv MOVE_DOWN &mmv MOVE_UP>;
+                tap_ms = <40>;
+                wait_ms = <200>;
+        };
+
         conditional_layers {
             compatible = "zmk,conditional-layers";
             tri_layer {
@@ -88,7 +98,7 @@
      // ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
              ___           &kp F1        &kp F2        &kp F3        &kp F4        &kp F5            &kp F6        &kp F7        &kp F8        &kp F9        &kp F10       ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-             ___           &kp F11      &kp F12         ___       &sys_reset    &bootloader       &bootloader   &sys_reset        ___           ___           ___          ___
+             ___           &kp F11      &kp F12         ___       &sys_reset    &bootloader       &bootloader   &sys_reset    &aim AIM_TOG      ___           ___          ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
                                      _BT_SEL_KEYS_                                                                  ___           ___           ___           ___          ___
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
