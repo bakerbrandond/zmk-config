@@ -32,7 +32,7 @@
                 compatible = "zmk,anti-idle-generic";
                 interval-ms = <30000>;
                 bindings = <&mmv MOVE_DOWN &mmv MOVE_UP>;
-                tap_ms = <40>;
+                tap_ms = <200>;
                 wait_ms = <200>;
         };
 
