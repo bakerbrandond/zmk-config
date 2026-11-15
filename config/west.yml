@@ -6,8 +6,8 @@ manifest:
       url-base: https://github.com/zmkfirmware
     - name: kbrd-space
       url-base: https://github.com/kbrd-space
-    - name: carrefinho
-      url-base: https://github.com/carrefinho
+    - name: bakerbrandond
+      url-base: https://github.com/bakerbrandond
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -16,7 +16,7 @@ manifest:
       remote: kbrd-space
       revision: main
     - name: prospector-zmk-module
-      remote: carrefinho
-      revision: main # main supports ZMK v0.3 and older (Zephyr 3.5)
+      remote: bakerbrandond
+      revision: nord # fork of carrefinho/prospector-zmk-module main (ZMK v0.3): Nord theme + battery bar fix
   self:
     path: config

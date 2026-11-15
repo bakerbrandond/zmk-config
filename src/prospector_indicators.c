@@ -36,11 +36,13 @@
 #endif
 
 #define POLL_MS 500
-#define COLOR_ON 0x00ffe5  // same teal as the Prospector caps word indicator
-#define COLOR_OFF 0x202020 // same dim grey as an inactive indicator
-#define COLOR_TEXT 0x909090 // same grey as inactive layer names
-#define COLOR_DIM 0x404040  // output not connected
-#define COLOR_ACTIVE 0xffffff // output currently in use
+// Nord palette, matching theme.h in bakerbrandond/prospector-zmk-module
+// (that header is private to the module's build, so the values live here too)
+#define COLOR_ON 0x8FBCBB     // nord7 frost teal: jiggle on
+#define COLOR_OFF 0x3B4252    // nord1: jiggle off
+#define COLOR_ACTIVE 0x88C0D0 // nord8 frost: output currently in use
+#define COLOR_TEXT 0x81A1C1   // nord9 frost: output connected, not in use
+#define COLOR_DIM 0x434C5E    // nord2: output not connected
 
 // The Prospector layer roller is aligned LEFT_MID at y = -20 and draws its
 // selected row at its vertical center, so y = -20 is the active layer's line.
