@@ -53,6 +53,7 @@
 #define ACTIVE_LAYER_Y (-20)
 #endif
 #define ROW_GAP 32 // vertical spacing between our indicators
+#define INDICATOR_Y_SHIFT (-16) // stack sits a little above the layer name's level
 
 struct zmk_widget_battery_bar;
 int __real_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv_obj_t *parent);
@@ -136,11 +137,11 @@ int __wrap_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv
     int ret = __real_zmk_widget_battery_bar_init(widget, screen);
 
 #if IS_ENABLED(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
-    jiggle_icon = make_label(screen, LV_SYMBOL_REFRESH, COLOR_OFF, ACTIVE_LAYER_Y);
+    jiggle_icon = make_label(screen, LV_SYMBOL_REFRESH, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT);
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
-    usb_label = make_label(screen, LV_SYMBOL_USB, COLOR_DIM, ACTIVE_LAYER_Y + ROW_GAP);
-    ble_label = make_label(screen, "", COLOR_DIM, ACTIVE_LAYER_Y + 2 * ROW_GAP);
+    usb_label = make_label(screen, LV_SYMBOL_USB, COLOR_DIM, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT + ROW_GAP);
+    ble_label = make_label(screen, "", COLOR_DIM, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT + 2 * ROW_GAP);
 #endif
 
     poll(NULL);
