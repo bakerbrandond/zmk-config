@@ -44,10 +44,14 @@
 #define COLOR_TEXT 0x81A1C1   // nord9 frost: output connected, not in use
 #define COLOR_DIM 0x434C5E    // nord2: output not connected
 
-// The Prospector layer roller is aligned LEFT_MID at y = -20 and draws its
-// selected row at its vertical center, so y = -20 is the active layer's line.
+// The Prospector layer roller draws its selected row at its vertical center;
+// the module exports where that is (it moves up when the WPM panel is on).
 #define RIGHT_X (-14)
+#ifdef CONFIG_PROSPECTOR_ACTIVE_LAYER_Y
+#define ACTIVE_LAYER_Y CONFIG_PROSPECTOR_ACTIVE_LAYER_Y
+#else
 #define ACTIVE_LAYER_Y (-20)
+#endif
 #define ROW_GAP 32 // vertical spacing between our indicators
 
 struct zmk_widget_battery_bar;
