@@ -69,34 +69,45 @@ LV_IMG_DECLARE(balloon);
  *             8-connected pixels that have an ink 4-neighbour (so dithered
  *             clouds and lone birds don't catch snow).
  */
-static const uint8_t ground_mountain[ART_W] = {
+static const uint8_t ground_mountain[ART_W] __maybe_unused = {
     140, 140, 140,  54,  53,  52,  51,  50,  50,  49,  48,  47,  47,  46,  45,  44,  43,
      43,  42,  41,  39,  38,  37,  36,  35,  32,  30,  29,  28,  27,  26,  24,  22,  21,
      20,  22,  25,  27,  28,  29,  30,  31,  33,  34,  35,  35,  35,  35,  36,  36,  43,
      44,  45,  46,  47,  48,  48,  49,  50,  51,  52,  52,  53,  54,  58, 140, 140, 140,
 };
-static const uint8_t ground_balloon[ART_W] = {
+static const uint8_t ground_balloon[ART_W] __maybe_unused = {
     105, 103, 101, 100,  98,  97,  96,  98, 100, 102, 104, 106, 107, 108, 108, 109,  54,
      49,  38,  23,  20,  18,  17,  16,  15,  14,  13,  13,  12,  12,  12,  11,  11,  11,
      11,  11,  11,  11,  12,  12,  12,  13,  13,  14,  15,  16,  17,  18,  20,  23, 105,
     106, 106, 107, 107, 106, 106, 105, 104, 103, 101, 100,  99, 100, 102, 103, 104, 104,
 };
 
+enum scene_style {
+    STYLE_INVERTED, // ink white on a black sky
+    STYLE_DITHERED, // light parts dithered grey, dark parts black
+    STYLE_NIGHT,    // black sky with stars and a moon, white ridge, dithered detail below
+};
+
 struct scene {
     const lv_img_dsc_t *art;
     const uint8_t *ground;
-    bool inverted;  // true: ink white on a black sky; false: light parts dithered grey
+    enum scene_style style;
     uint8_t fall_x_min, fall_x_max;
 };
 
 #if IS_ENABLED(CONFIG_NICE_VIEW_SNOW_SCENE_BALLOON)
 // Night sky: the light background goes black, the ink (balloon, clouds,
 // mountains) white.
-static const struct scene scene = {&balloon, ground_balloon, true, 1, 66};
+static const struct scene scene = {&balloon, ground_balloon, STYLE_INVERTED, 1, 66};
+#elif IS_ENABLED(CONFIG_NICE_VIEW_SNOW_SCENE_MOUNTAIN_NIGHT)
+// Night mountain: the sun's rays thin out into stars around a crescent moon,
+// the skyline becomes a white ridge line, and the pines and the moonlit flank
+// below it stay dithered grey on a black mountain.
+static const struct scene scene = {&mountain, ground_mountain, STYLE_NIGHT, 3, 64};
 #else
 // The dark mountain stays black; sun rays, pines and frame turn dithered grey.
 // Flakes fall between the frame's inner edges.
-static const struct scene scene = {&mountain, ground_mountain, false, 3, 64};
+static const struct scene scene = {&mountain, ground_mountain, STYLE_DITHERED, 3, 64};
 #endif
 
 #define FALL_X_MIN (scene.fall_x_min)
@@ -194,13 +205,45 @@ static void draw_flake(const struct flake *f) {
     }
 }
 
+#define MOON_X 50
+#define MOON_Y 14
+#define MOON_R 7
+#define MOON_CUT 3 // the crescent's shadow disc is shifted this far right
+
+static bool night_white(int px, int py, bool bit) {
+    bool dither = bit && ((px + py) & 1) == 0;
+    if (px < FALL_X_MIN || px > FALL_X_MAX || py < 2) {
+        return dither; // frame
+    }
+    int gy = scene.ground[px];
+    if (py < gy) { // sky
+        int dx = px - MOON_X, dy = py - MOON_Y, cx = dx - MOON_CUT, cy = dy + 1;
+        if (dx * dx + dy * dy <= MOON_R * MOON_R && cx * cx + cy * cy > MOON_R * MOON_R) {
+            return true;
+        }
+        // a sparse, fixed subset of the sun's rays become stars
+        uint32_t h = ((uint32_t)px * 73856093u) ^ ((uint32_t)py * 19349663u);
+        return bit && h % 23 == 0;
+    }
+    return py == gy || dither; // ridge line, then detail below it
+}
+
 static void render(void) {
     for (int px = 0; px < ART_W; px++) {
         for (int py = 0; py < ART_H; py++) {
             bool bit = art_bit(px, py);
-            bool white = scene.inverted ? !bit
-                                        // 50% checker so white snow stands out on it
-                                        : bit && ((px + py) & 1) == 0;
+            bool white;
+            switch (scene.style) {
+            case STYLE_INVERTED:
+                white = !bit;
+                break;
+            case STYLE_NIGHT:
+                white = night_white(px, py, bit);
+                break;
+            default: // 50% checker so white snow stands out on it
+                white = bit && ((px + py) & 1) == 0;
+                break;
+            }
             put_px(px, py, white ? SNOW : SKY);
         }
     }

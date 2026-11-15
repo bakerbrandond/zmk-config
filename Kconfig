@@ -22,6 +22,9 @@ choice NICE_VIEW_SNOW_SCENE
 config NICE_VIEW_SNOW_SCENE_MOUNTAIN
     bool "Stock mountain (dark mountain, dithered sun rays and pines)"
 
+config NICE_VIEW_SNOW_SCENE_MOUNTAIN_NIGHT
+    bool "Mountain at night (stars, crescent moon, white ridge)"
+
 config NICE_VIEW_SNOW_SCENE_BALLOON
     bool "Stock balloon, inverted to a night sky"
 
