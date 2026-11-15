@@ -31,3 +31,8 @@ config REBOOT_ON_FATAL_ERROR
     bool "Reboot instead of halting on a fatal error"
     default y if SHIELD_CORNE_DONGLE
     depends on REBOOT
+
+config PROSPECTOR_STUDIO_INDICATOR
+    bool "Show the ZMK Studio lock state on the Prospector display"
+    default y
+    depends on SHIELD_PROSPECTOR_ADAPTER && ZMK_DISPLAY && ZMK_STUDIO

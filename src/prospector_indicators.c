@@ -25,6 +25,9 @@
 #if IS_ENABLED(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
 #include <anti_idle_generic.h>
 #endif
+#if IS_ENABLED(CONFIG_PROSPECTOR_STUDIO_INDICATOR)
+#include <zmk/studio/core.h>
+#endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
 #include <zmk/endpoints.h>
 #if IS_ENABLED(CONFIG_ZMK_USB)
@@ -115,7 +118,26 @@ static void update_output(void) {
 }
 #endif
 
+#if IS_ENABLED(CONFIG_PROSPECTOR_STUDIO_INDICATOR)
+// ZMK Studio: pencil lit while Studio is unlocked (keymap editable)
+static lv_obj_t *studio_icon;
+static int last_studio = -1;
+
+static void update_studio(void) {
+    int unlocked = zmk_studio_core_get_lock_state() == ZMK_STUDIO_CORE_LOCK_STATE_UNLOCKED;
+    if (unlocked == last_studio) {
+        return;
+    }
+    last_studio = unlocked;
+    lv_obj_set_style_text_color(studio_icon, lv_color_hex(unlocked ? COLOR_ON : COLOR_OFF),
+                                LV_PART_MAIN);
+}
+#endif
+
 static void poll(lv_timer_t *timer) {
+#if IS_ENABLED(CONFIG_PROSPECTOR_STUDIO_INDICATOR)
+    update_studio();
+#endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
     update_jiggle();
 #endif
@@ -136,6 +158,10 @@ static lv_obj_t *make_label(lv_obj_t *screen, const char *text, uint32_t color, 
 int __wrap_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv_obj_t *screen) {
     int ret = __real_zmk_widget_battery_bar_init(widget, screen);
 
+#if IS_ENABLED(CONFIG_PROSPECTOR_STUDIO_INDICATOR)
+    // one row above the jiggle icon
+    studio_icon = make_label(screen, LV_SYMBOL_EDIT, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT - ROW_GAP);
+#endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
     jiggle_icon = make_label(screen, LV_SYMBOL_REFRESH, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT);
 #endif
