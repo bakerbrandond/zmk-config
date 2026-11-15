@@ -9,3 +9,7 @@ if(CONFIG_NICE_VIEW_SNOW)
   # Hook the stock nice!view status widget (see src/nice_view_snow.c)
   zephyr_ld_options(-Wl,--wrap=zmk_widget_status_init)
 endif()
+
+if(CONFIG_REBOOT_ON_FATAL_ERROR)
+  target_sources(app PRIVATE src/reboot_on_fatal.c)
+endif()

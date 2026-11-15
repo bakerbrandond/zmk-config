@@ -26,3 +26,8 @@ config NICE_VIEW_SNOW_SCENE_BALLOON
     bool "Stock balloon, inverted to a night sky"
 
 endchoice
+
+config REBOOT_ON_FATAL_ERROR
+    bool "Reboot instead of halting on a fatal error"
+    default y if SHIELD_CORNE_DONGLE
+    depends on REBOOT
