@@ -1,0 +1,105 @@
+From 7bc07fb9542cfe66c626403ce08b3effecedf863 Mon Sep 17 00:00:00 2001
+From: Brandon Baker <brandon.baker17@accesscfa.com>
+Date: Mon, 16 Feb 2026 17:58:06 -0500
+Subject: [PATCH 1/2] start
+
+---
+ config/corne.conf   |  2 ++
+ config/corne.keymap | 45 +++++++++++++++++++++++++++++++++++++++++++++
+ 2 files changed, 47 insertions(+)
+
+diff --git a/config/corne.conf b/config/corne.conf
+index a57a0dd..7d2e5b3 100644
+--- a/config/corne.conf
++++ b/config/corne.conf
+@@ -6,3 +6,5 @@
+ # CONFIG_ZMK_DISPLAY=y
+ 
+ CONFIG_ZMK_POINTING=y
++
++CONFIG_ZMK_PM_SOFT_OFF=y
+diff --git a/config/corne.keymap b/config/corne.keymap
+index 0219900..87f5004 100644
+--- a/config/corne.keymap
++++ b/config/corne.keymap
+@@ -26,6 +26,51 @@
+ #define ___ &trans
+ 
+ / {
++        keys {
++            compatible = "gpio-keys";
++            soft_off_key: soft_off_key {
++                gpios = <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++            };
++        };
++
++        behaviors {
++            hw_soft_off: hw_soft_off {
++                compatible = "zmk,behavior-soft-off";
++                #binding-cells = <0>;
++                hold-time-ms = <0>;
++                //split-peripheral-off-on-press;
++            };
++        };
++
++        soft_off_direct_scan: soft_off_direct_scan {
++            compatible = "zmk,kscan-gpio-direct";
++            input-keys = <&soft_off_key>;
++            wakeup-source;
++        };
++
++        soft_off_sideband: soft_off_sideband {
++            compatible = "zmk,kscan-sideband-behaviors";
++            kscan = <&soft_off_direct_scan>;
++            auto-enable;
++            wakeup-source;
++            soft_off {
++                column = <0>;
++                row = <0>;
++                bindings = <&hw_soft_off>;
++            };
++        };
++
++        soft_off_wakeup_trigger: soft_off_wakeup_trigger {
++            compatible = "zmk,gpio-key-wakeup-trigger";
++            trigger = <&soft_off_key>;
++            wakeup-source;
++        };
++
++        soft_off_wakers {
++            compatible = "zmk,soft-off-wakeup-sources";
++            wakeup-sources = <&soft_off_wakeup_trigger>;
++        };
++
+         conditional_layers {
+             compatible = "zmk,conditional-layers";
+             tri_layer {
+-- 
+2.39.5
+
+
+From bc264d45380c7ddbf867c790a03cc588190ad4c7 Mon Sep 17 00:00:00 2001
+From: Brandon Baker <brandon.baker17@accesscfa.com>
+Date: Mon, 16 Feb 2026 18:01:55 -0500
+Subject: [PATCH 2/2] f
+
+---
+ config/corne.keymap | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/config/corne.keymap b/config/corne.keymap
+index 87f5004..3b6cfa5 100644
+--- a/config/corne.keymap
++++ b/config/corne.keymap
+@@ -29,7 +29,7 @@
+         keys {
+             compatible = "gpio-keys";
+             soft_off_key: soft_off_key {
+-                gpios = <&pro_micro 10 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
++                gpios = <&pro_micro 10 (GPIO_ACTIVE_HIGH | GPIO_PULL_UP)>;
+             };
+         };
+ 
+-- 
+2.39.5
+
