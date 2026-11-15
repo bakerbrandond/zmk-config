@@ -42,7 +42,7 @@
 #define COLOR_OFF 0x3B4252    // nord1: jiggle off
 #define COLOR_ACTIVE 0x88C0D0 // nord8 frost: output currently in use
 #define COLOR_TEXT 0x81A1C1   // nord9 frost: output connected, not in use
-#define COLOR_DIM 0x434C5E    // nord2: output not connected
+#define COLOR_DIM COLOR_OFF   // nord1, same as jiggle off: output not connected
 
 // The Prospector layer roller draws its selected row at its vertical center;
 // the module exports where that is (it moves up when the WPM panel is on).
