@@ -40,13 +40,13 @@
 
         combos {
             compatible = "zmk,combos";
-            // Leave Zappy Birds: press both top corners (Q + P) after a pause
+            // Leave Zappy Birds: press both top corners (Q + P). The firmware
+            // ignores it unless there's been a 300 ms pause in flapping.
             zappy_exit {
                 key-positions = <1 10>;
                 bindings = <&zappy ZAP>;
                 layers = <ZAP>;
                 timeout-ms = <40>;
-                require-prior-idle-ms = <300>;
             };
         };
 
