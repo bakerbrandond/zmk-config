@@ -55,8 +55,8 @@
 #else
 #define ACTIVE_LAYER_Y (-20)
 #endif
-#define ROW_GAP 32 // vertical spacing between our indicators
-#define INDICATOR_Y_SHIFT (-16) // stack sits a little above the layer name's level
+#define ROW_GAP 24 // vertical spacing between our indicators (4 rows fit above the WPM panel)
+#define INDICATOR_Y_SHIFT (-12) // stack starts clear of the display's rounded top-right corner
 
 struct zmk_widget_battery_bar;
 int __real_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv_obj_t *parent);
