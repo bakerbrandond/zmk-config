@@ -23,6 +23,7 @@
 #define RAS 2
 #define FUN 3
 #define MOS 4
+#define ZAP 5  // Zappy Birds game layer (hidden from the Prospector layer list)
 
 #include "behaviors.dtsi"
 
@@ -35,6 +36,18 @@
                 bindings = <&mmv MOVE_DOWN &mmv MOVE_UP>;
                 tap_ms = <200>;
                 wait_ms = <200>;
+        };
+
+        combos {
+            compatible = "zmk,combos";
+            // Leave Zappy Birds: press both top corners (Q + P) after a pause
+            zappy_exit {
+                key-positions = <1 10>;
+                bindings = <&zappy ZAP>;
+                layers = <ZAP>;
+                timeout-ms = <40>;
+                require-prior-idle-ms = <300>;
+            };
         };
 
         conditional_layers {
@@ -99,7 +112,7 @@
      // ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮   ╭─────────────┬─────────────┬─────────────┬─────────────┬─────────────┬─────────────╮
              ___           &kp F1        &kp F2        &kp F3        &kp F4        &kp F5            &kp F6        &kp F7        &kp F8        &kp F9        &kp F10       ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-             ___           &kp F11      &kp F12         ___       &sys_reset    &bootloader       &bootloader   &sys_reset    &aim AIM_TOG  &out OUT_TOG     ___          ___
+             ___           &kp F11      &kp F12         ___       &sys_reset    &bootloader       &bootloader   &sys_reset    &aim AIM_TOG  &out OUT_TOG  &zappy ZAP      ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
                                      _BT_SEL_KEYS_                                                                  ___           ___           ___           ___          ___
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
@@ -120,6 +133,17 @@
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
                                                         ___          &tog MOS       ___               ___           ___           ___
      //                                           ╰─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────╯
+                        >;
+                };
+
+                zappy_layer {
+                        display-name = "Zappy";
+                        // Every key flaps; nothing reaches the computer. Exit: Q + P combo.
+                        bindings = <
+             &zflap        &zflap        &zflap        &zflap        &zflap        &zflap            &zflap        &zflap        &zflap        &zflap        &zflap        &zflap
+             &zflap        &zflap        &zflap        &zflap        &zflap        &zflap            &zflap        &zflap        &zflap        &zflap        &zflap        &zflap
+             &zflap        &zflap        &zflap        &zflap        &zflap        &zflap            &zflap        &zflap        &zflap        &zflap        &zflap        &zflap
+                                                    &zflap        &zflap        &zflap            &zflap        &zflap        &zflap
                         >;
                 };
         };

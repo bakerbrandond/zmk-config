@@ -16,4 +16,16 @@
             tapping-term-ms = <200>;
             bindings = <&mo LOW>, <&mo MOS>, <&tog MOS>;
         };
+
+    // Zappy Birds (Prospector dongle game). Drivers are built only on the
+    // dongle with CONFIG_PROSPECTOR_ZAPPY_BIRDS=y; elsewhere they're inert.
+    zappy: zappy_toggle {
+            compatible = "zmk,behavior-zappy-toggle";
+            #binding-cells = <1>;
+        };
+
+    zflap: zappy_flap {
+            compatible = "zmk,behavior-zappy-flap";
+            #binding-cells = <0>;
+        };
 };

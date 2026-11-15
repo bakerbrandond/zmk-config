@@ -17,6 +17,6 @@ manifest:
       revision: main
     - name: prospector-zmk-module
       remote: bakerbrandond
-      revision: nord # fork of carrefinho/prospector-zmk-module main (ZMK v0.3): Nord theme + battery bar fix
+      revision: zappy # fork of carrefinho/prospector-zmk-module main (ZMK v0.3): Nord theme + battery bar fix + Zappy Birds game
   self:
     path: config
