@@ -2,8 +2,10 @@
  * Extra indicators for the Prospector display, in the right-hand column:
  *   - anti-idle (mouse jiggler): refresh icon, level with the active layer,
  *     teal when on
- *   - active output: USB icon, or Bluetooth icon + profile number (dimmed
- *     while that profile has no host connected), below the jiggle icon
+ *   - outputs, below the jiggle icon: a USB icon and a Bluetooth icon with
+ *     the active profile number (always shown, 1-based). Each is white while
+ *     it's the output in use, grey while connected but not in use, and dim
+ *     while not connected. ZMK only switches with &out when both are ready.
  *
  * The Prospector module owns the status screen. Instead of forking it, the
  * linker wraps its zmk_widget_battery_bar_init(), which the module calls once
@@ -17,8 +19,6 @@
  * display thread, so touching LVGL objects from it is safe.
  */
 
-#include <stdio.h>
-#include <string.h>
 #include <lvgl.h>
 #include <zephyr/kernel.h>
 
@@ -27,6 +27,9 @@
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
 #include <zmk/endpoints.h>
+#if IS_ENABLED(CONFIG_ZMK_USB)
+#include <zmk/usb.h>
+#endif
 #if IS_ENABLED(CONFIG_ZMK_BLE)
 #include <zmk/ble.h>
 #endif
@@ -36,7 +39,8 @@
 #define COLOR_ON 0x00ffe5  // same teal as the Prospector caps word indicator
 #define COLOR_OFF 0x202020 // same dim grey as an inactive indicator
 #define COLOR_TEXT 0x909090 // same grey as inactive layer names
-#define COLOR_DIM 0x404040  // Bluetooth profile selected but not connected
+#define COLOR_DIM 0x404040  // output not connected
+#define COLOR_ACTIVE 0xffffff // output currently in use
 
 // The Prospector layer roller is aligned LEFT_MID at y = -20 and draws its
 // selected row at its vertical center, so y = -20 is the active layer's line.
@@ -63,41 +67,44 @@ static void update_jiggle(void) {
 #endif
 
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
-static lv_obj_t *output_label;
-static char last_output[16];
-static uint32_t last_output_color;
+static lv_obj_t *usb_label;
+static lv_obj_t *ble_label;
+
+static void set_color(lv_obj_t *label, uint32_t color, uint32_t *last) {
+    if (color != *last) {
+        *last = color;
+        lv_obj_set_style_text_color(label, lv_color_hex(color), LV_PART_MAIN);
+    }
+}
+
+static uint32_t output_color(bool in_use, bool ready) {
+    return in_use ? COLOR_ACTIVE : (ready ? COLOR_TEXT : COLOR_DIM);
+}
 
 static void update_output(void) {
-    char text[16];
-    uint32_t color = COLOR_TEXT;
-    struct zmk_endpoint_instance ep = zmk_endpoints_selected();
+    static uint32_t last_usb_color, last_ble_color;
+    static int last_profile = -1;
+    enum zmk_transport selected = zmk_endpoints_selected().transport;
 
-    switch (ep.transport) {
-    case ZMK_TRANSPORT_USB:
-        snprintf(text, sizeof(text), LV_SYMBOL_USB);
-        break;
-#if IS_ENABLED(CONFIG_ZMK_BLE)
-    case ZMK_TRANSPORT_BLE:
-        // 1-based, like ZMK's built-in output widget (BT_SEL 0 shows "1")
-        snprintf(text, sizeof(text), LV_SYMBOL_BLUETOOTH "%d", ep.ble.profile_index + 1);
-        if (!zmk_ble_profile_is_connected(ep.ble.profile_index)) {
-            color = COLOR_DIM;
-        }
-        break;
+#if IS_ENABLED(CONFIG_ZMK_USB)
+    bool usb_ready = zmk_usb_is_hid_ready();
+#else
+    bool usb_ready = false;
 #endif
-    default:
-        text[0] = '\0';
-        break;
-    }
+    set_color(usb_label, output_color(usb_ready && selected == ZMK_TRANSPORT_USB, usb_ready),
+              &last_usb_color);
 
-    if (strcmp(text, last_output) != 0) {
-        strcpy(last_output, text);
-        lv_label_set_text(output_label, text);
+#if IS_ENABLED(CONFIG_ZMK_BLE)
+    int profile = zmk_ble_active_profile_index();
+    bool ble_ready = zmk_ble_active_profile_is_connected();
+    if (profile != last_profile) {
+        last_profile = profile;
+        // 1-based, like ZMK's built-in output widget (BT_SEL 0 shows "1")
+        lv_label_set_text_fmt(ble_label, LV_SYMBOL_BLUETOOTH "%d", profile + 1);
     }
-    if (color != last_output_color) {
-        last_output_color = color;
-        lv_obj_set_style_text_color(output_label, lv_color_hex(color), LV_PART_MAIN);
-    }
+    set_color(ble_label, output_color(ble_ready && selected == ZMK_TRANSPORT_BLE, ble_ready),
+              &last_ble_color);
+#endif
 }
 #endif
 
@@ -126,7 +133,8 @@ int __wrap_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv
     jiggle_icon = make_label(screen, LV_SYMBOL_REFRESH, COLOR_OFF, ACTIVE_LAYER_Y);
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
-    output_label = make_label(screen, "", COLOR_TEXT, ACTIVE_LAYER_Y + ROW_GAP);
+    usb_label = make_label(screen, LV_SYMBOL_USB, COLOR_DIM, ACTIVE_LAYER_Y + ROW_GAP);
+    ble_label = make_label(screen, "", COLOR_DIM, ACTIVE_LAYER_Y + 2 * ROW_GAP);
 #endif
 
     poll(NULL);
