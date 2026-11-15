@@ -51,7 +51,15 @@ build() {
 }
 
 case "$target" in
-    dongle) build dongle seeeduino_xiao_ble "corne_dongle prospector_adapter" ;;
+    dongle)
+        # ZMK Studio needs this snippet (as in build.yaml); merge with any -DSNIPPET= given
+        snip="studio-rpc-usb-uart"
+        rest=()
+        for a in ${extra[@]+"${extra[@]}"}; do
+            case "$a" in -DSNIPPET=*) snip="$snip;${a#-DSNIPPET=}" ;; *) rest+=("$a") ;; esac
+        done
+        extra=(${rest[@]+"${rest[@]}"} "-DSNIPPET=$snip")
+        build dongle seeeduino_xiao_ble "corne_dongle prospector_adapter" ;;
     left)   build left nice_nano_v2 "corne_left nice_view_adapter nice_view" ;;
     right)  build right nice_nano_v2 "corne_right nice_view_adapter nice_view" ;;
     all)

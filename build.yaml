@@ -26,6 +26,7 @@ include:
   # Prospector dongle is the central; both halves above are peripherals
   - board: seeeduino_xiao_ble
     shield: corne_dongle prospector_adapter
+    snippet: studio-rpc-usb-uart
   - board: seeeduino_xiao_ble
     shield: settings_reset
   - board: nice_nano_v2
