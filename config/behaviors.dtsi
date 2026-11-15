@@ -28,4 +28,10 @@
             compatible = "zmk,behavior-zappy-flap";
             #binding-cells = <0>;
         };
+
+    // Step the Prospector backlight (0/5/15/30/60/100, saved across reboots)
+    pbl: prospector_backlight {
+            compatible = "zmk,behavior-prospector-backlight";
+            #binding-cells = <0>;
+        };
 };
