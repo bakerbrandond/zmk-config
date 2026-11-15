@@ -1,0 +1,5 @@
+if(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
+  target_sources(app PRIVATE src/anti_idle_indicator.c)
+  # Hook the Prospector status screen build (see src/anti_idle_indicator.c)
+  zephyr_ld_options(-Wl,--wrap=zmk_widget_battery_bar_init)
+endif()

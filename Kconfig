@@ -1,0 +1,4 @@
+config PROSPECTOR_ANTI_IDLE_INDICATOR
+    bool "Show anti-idle (jiggler) state on the Prospector display"
+    default y
+    depends on SHIELD_PROSPECTOR_ADAPTER && ZMK_ANTI_IDLE && ZMK_DISPLAY
