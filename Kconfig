@@ -7,3 +7,22 @@ config PROSPECTOR_OUTPUT_INDICATOR
     bool "Show the active output (USB or Bluetooth profile) on the Prospector display"
     default y
     depends on SHIELD_PROSPECTOR_ADAPTER && ZMK_DISPLAY
+
+config NICE_VIEW_SNOW
+    bool "Snowfall animation in place of the nice!view peripheral art"
+    default y
+    depends on SHIELD_NICE_VIEW && NICE_VIEW_WIDGET_STATUS && ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL
+
+choice NICE_VIEW_SNOW_SCENE
+    prompt "Scene the snow falls on"
+    depends on NICE_VIEW_SNOW
+    default NICE_VIEW_SNOW_SCENE_BALLOON if SHIELD_CORNE_RIGHT
+    default NICE_VIEW_SNOW_SCENE_MOUNTAIN
+
+config NICE_VIEW_SNOW_SCENE_MOUNTAIN
+    bool "Stock mountain (dark mountain, dithered sun rays and pines)"
+
+config NICE_VIEW_SNOW_SCENE_BALLOON
+    bool "Stock balloon, inverted to a night sky"
+
+endchoice
