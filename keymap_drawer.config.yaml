@@ -1,0 +1,33 @@
+# keymap-drawer settings for docs/keymap.svg (see scripts/draw-keymap.sh)
+parse_config:
+  # labels for bindings keymap-drawer shows as raw code, and this config's
+  # own behaviors
+  raw_binding_map:
+    "&pbl": "Screen light"
+    "&zappy ZAP": "Zappy Birds"
+    "&zflap": "flap"
+    "&studio_unlock": "Studio unlock"
+    "&aim AIM_TOG": "Jiggler"
+    "&out OUT_TOG": "USB/BT"
+    "&td0": {t: "Lower", s: "×2 Mouse"}
+    "&sys_reset": "Reset"
+    "&bootloader": "Boot loader"
+    # 1-based, like the Prospector's Bluetooth indicator
+    "&bt BT_SEL 0": "BT 1"
+    "&bt BT_SEL 1": "BT 2"
+    "&bt BT_SEL 2": "BT 3"
+    "&bt BT_SEL 3": "BT 4"
+    "&bt BT_SEL 4": "BT 5"
+    "&bt BT_CLR": "BT clear"
+    "&mkp LCLK": "Left click"
+    "&mkp RCLK": "Right click"
+    "&mkp MCLK": "Middle click"
+    "&mmv MOVE_UP": "Mouse ↑"
+    "&mmv MOVE_DOWN": "Mouse ↓"
+    "&mmv MOVE_LEFT": "Mouse ←"
+    "&mmv MOVE_RIGHT": "Mouse →"
+    "&msc SCRL_UP": "Scroll ↑"
+    "&msc SCRL_DOWN": "Scroll ↓"
+draw_config:
+  key_h: 56
+  combo_w: 32

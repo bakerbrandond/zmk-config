@@ -1,0 +1,42 @@
+name: Draw keymap
+
+# Redraws docs/keymap.svg with keymap-drawer whenever the keymap changes and
+# commits it back to the branch. (Pushes made with GITHUB_TOKEN don't start
+# other workflows, so this doesn't re-run the firmware build.)
+on:
+  push:
+    paths:
+      - config/corne.keymap
+      - config/behaviors.dtsi
+      - keymap_drawer.config.yaml
+      - scripts/draw-keymap.sh
+      - scripts/keymap_36.py
+      - .github/workflows/draw-keymap.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: draw-keymap-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  draw:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v6
+      - name: Draw
+        run: scripts/draw-keymap.sh
+      - name: Commit the drawing if it changed
+        run: |
+          git add docs/keymap.svg
+          if git diff --cached --quiet; then
+            echo "keymap drawing unchanged"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "Redraw keymap"
+          git push
