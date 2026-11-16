@@ -1,5 +1,5 @@
 if(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR OR CONFIG_PROSPECTOR_OUTPUT_INDICATOR OR CONFIG_PROSPECTOR_STUDIO_INDICATOR)
-  target_sources(app PRIVATE src/prospector_indicators.c)
+  target_sources(app PRIVATE src/prospector_indicators.c src/fonts/icon_sleep_off_20.c)
   # Hook the Prospector status screen build (see src/prospector_indicators.c)
   zephyr_ld_options(-Wl,--wrap=zmk_widget_battery_bar_init)
 endif()

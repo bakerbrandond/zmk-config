@@ -1,6 +1,6 @@
 /*
  * Extra indicators for the Prospector display, in the right-hand column:
- *   - anti-idle (mouse jiggler): refresh icon, level with the active layer,
+ *   - anti-idle (mouse jiggler): sleep-off icon, level with the active layer,
  *     teal when on
  *   - outputs, below the jiggle icon: a USB icon and a Bluetooth icon with
  *     the active profile number (always shown, 1-based). Each is white while
@@ -41,6 +41,10 @@
 #define POLL_MS 500
 // Nord palette, matching theme.h in bakerbrandond/prospector-zmk-module
 // (that header is private to the module's build, so the values live here too)
+// Material Design "sleep-off" (U+F04B3), from src/fonts/icon_sleep_off_20.c
+LV_FONT_DECLARE(icon_sleep_off_20);
+#define ICON_SLEEP_OFF "\xF3\xB0\x92\xB3"
+
 #define COLOR_ON 0x8FBCBB     // nord7 frost teal: jiggle on
 #define COLOR_OFF 0x3B4252    // nord1: jiggle off
 #define COLOR_ACTIVE 0x88C0D0 // nord8 frost: output currently in use
@@ -163,7 +167,8 @@ int __wrap_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv
     studio_icon = make_label(screen, LV_SYMBOL_EDIT, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT - ROW_GAP);
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_ANTI_IDLE_INDICATOR)
-    jiggle_icon = make_label(screen, LV_SYMBOL_REFRESH, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT);
+    jiggle_icon = make_label(screen, ICON_SLEEP_OFF, COLOR_OFF, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT);
+    lv_obj_set_style_text_font(jiggle_icon, &icon_sleep_off_20, LV_PART_MAIN);
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
     usb_label = make_label(screen, LV_SYMBOL_USB, COLOR_DIM, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT + ROW_GAP);
