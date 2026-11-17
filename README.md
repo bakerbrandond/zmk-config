@@ -7,9 +7,7 @@ display dongle as the central. The dongle runs a
 with a Nord theme, status indicators, a clock set by the computer, a
 matrix-rain screensaver and a small game. The halves show a night mountain scene where snow falls as you type.
 
-<!-- Demo video: upload the .mp4 in a GitHub issue or comment box (don't submit
-     it), then paste the resulting https://github.com/user-attachments/assets/…
-     link on its own line here. -->
+https://github.com/user-attachments/assets/82b6d9a4-0048-42cd-b131-5af40c201997
 
 ## Hardware
 
