@@ -60,14 +60,26 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
 (main branch, for ZMK v0.3):
 
 - **Nord colour theme**, with the active-layer roller, a battery bar for both
-  halves (with an ✕ when a half isn't connected) and a WPM panel.
-- **Indicators** (right side, CaskaydiaCove Nerd Font icons):
-  - ZMK Studio unlocked (open lock)
-  - mouse jiggler on (sleep-off)
-  - USB output
-  - Bluetooth output with the active profile number
+  halves (with an ✕ when a half isn't connected) and a WPM panel with a purple
+  graph.
+- **Battery bars coloured by charge**: green from 70%, yellow from 30%, red
+  below 30%.
+- **Charging bolt**: while a half is plugged into USB, a yellow ⚡ replaces its
+  percentage. It appears a couple of seconds after the half connects and goes
+  back to the number when you unplug it. The halves report this through a small
+  Bluetooth service from the fork, switched on by
+  `CONFIG_PROSPECTOR_PERIPHERAL_CHARGING_SERVICE=y` in both halves' `.conf`
+  files. A half without it just shows the number.
+- **Indicators** (right side, CaskaydiaCove Nerd Font icons), each in its own
+  Nord colour:
+  - ZMK Studio unlocked (open lock), purple
+  - mouse jiggler on (sleep-off), yellow
+  - USB output, orange
+  - Bluetooth output with the active profile number, blue (nord10)
 
-  Each one is lit, dim or off to show its state.
+  Studio and the jiggler are full colour when on and dim grey when off. USB
+  and Bluetooth are full colour when in use, half strength when connected but
+  not selected, and dim grey when not connected.
 - **Clock**: 24-hour `HH:MM` (or 12-hour) above the layer name, sent by the computer.
   It's hidden when no computer is sending the time (see [Clock](#clock)).
 - **Brightness key** (Function + D). There's no ambient light sensor, so the
@@ -220,7 +232,9 @@ The halves are built as peripherals of the dongle. To use them on their own:
 2. Remove the `corne_dongle` and `seeeduino_xiao_ble` entries from
    [`build.yaml`](build.yaml). You can also drop the `prospector-zmk-module`
    and `zmk-raw-hid` projects from [`config/west.yml`](config/west.yml).
-3. Set `CONFIG_NICE_VIEW_SNOW_STATUS=y` in
+3. Delete `CONFIG_PROSPECTOR_PERIPHERAL_CHARGING_SERVICE=y` from both halves'
+   `.conf` files. Only the dongle reads it.
+4. Set `CONFIG_NICE_VIEW_SNOW_STATUS=y` in
    [`config/corne_right.conf`](config/corne_right.conf) if you want battery and
    connection icons on the right half.
 
