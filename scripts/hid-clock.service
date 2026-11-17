@@ -1,0 +1,14 @@
+# systemd user service for scripts/hid-clock.py. Install (adjust the path if the
+# repo lives elsewhere):
+#   mkdir -p ~/.config/systemd/user && cp scripts/hid-clock.service ~/.config/systemd/user/
+#   systemctl --user daemon-reload && systemctl --user enable --now hid-clock
+[Unit]
+Description=Send the time to the Prospector dongle clock
+
+[Service]
+ExecStart=/usr/bin/python3 -I %h/repos/zmk/zmk-config/scripts/hid-clock.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=default.target

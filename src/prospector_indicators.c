@@ -38,6 +38,10 @@
 #endif
 #endif
 
+#if IS_ENABLED(CONFIG_PROSPECTOR_CLOCK)
+#include "prospector_clock.h"
+#endif
+
 #define POLL_MS 500
 // Nord palette, matching theme.h in bakerbrandond/prospector-zmk-module
 // (that header is private to the module's build, so the values live here too)
@@ -189,6 +193,10 @@ int __wrap_zmk_widget_battery_bar_init(struct zmk_widget_battery_bar *widget, lv
     lv_obj_set_style_text_font(ble_label, &ble_font, LV_PART_MAIN);
     lv_obj_set_width(ble_label, LV_SIZE_CONTENT);
     lv_obj_align(ble_label, LV_ALIGN_RIGHT_MID, RIGHT_X, ACTIVE_LAYER_Y + INDICATOR_Y_SHIFT + 2 * ROW_GAP);
+#endif
+
+#if IS_ENABLED(CONFIG_PROSPECTOR_CLOCK)
+    prospector_clock_create(screen);
 #endif
 
     poll(NULL);

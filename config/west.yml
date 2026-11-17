@@ -8,6 +8,8 @@ manifest:
       url-base: https://github.com/kbrd-space
     - name: bakerbrandond
       url-base: https://github.com/bakerbrandond
+    - name: zzeneg
+      url-base: https://github.com/zzeneg
   projects:
     - name: zmk
       remote: zmkfirmware
@@ -18,5 +20,8 @@ manifest:
     - name: prospector-zmk-module
       remote: bakerbrandond
       revision: main # fork of carrefinho/prospector-zmk-module (ZMK v0.3): Nord theme, Zappy Birds, matrix screensaver
+    - name: zmk-raw-hid
+      remote: zzeneg
+      revision: 6a37765dfab6197292e7a9f47305dcf87386d56a # main, 2026-08-24: Raw HID over USB + BLE (dongle clock)
   self:
     path: config

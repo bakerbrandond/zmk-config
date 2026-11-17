@@ -1,0 +1,9 @@
+# Let the logged-in user write to the ZMK keyboard's HID nodes (USB and Bluetooth),
+# so scripts/hid-clock.py can send the time to the Prospector dongle's Raw HID
+# interface without root. Install:
+#   sudo cp scripts/70-zmk-raw-hid.rules /etc/udev/rules.d/
+#   sudo udevadm control --reload && sudo udevadm trigger
+# Matches every HID interface of the dongle (ZMK 1D50:615E), so the user can
+# also read its keyboard reports, which any app on the desktop sees anyway.
+SUBSYSTEM=="hidraw", KERNELS=="0003:1D50:615E.*", TAG+="uaccess"
+SUBSYSTEM=="hidraw", KERNELS=="0005:1D50:615E.*", TAG+="uaccess"

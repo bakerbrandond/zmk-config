@@ -8,6 +8,24 @@ config PROSPECTOR_OUTPUT_INDICATOR
     default y
     depends on SHIELD_PROSPECTOR_ADAPTER && ZMK_DISPLAY
 
+config PROSPECTOR_CLOCK
+    bool "24-hour clock on the Prospector display, set by the computer over Raw HID"
+    default y
+    depends on SHIELD_PROSPECTOR_ADAPTER && ZMK_DISPLAY && RAW_HID
+    help
+      Shows HH:MM above the active layer name. The time comes from a companion
+      app on the computer (qmk-hid-host, or scripts/hid-clock.py on Linux) via
+      the zmk-raw-hid module; without one the clock stays hidden.
+
+config PROSPECTOR_CLOCK_TIMEOUT_S
+    int "Hide the clock after this many seconds without a time update"
+    default 180
+    range 70 3600
+    depends on PROSPECTOR_CLOCK
+    help
+      The computer sends the time whenever the minute changes, so anything
+      over 60 s tolerates a missed update.
+
 config NICE_VIEW_SNOW
     bool "Snowfall animation in place of the nice!view peripheral art"
     default y
