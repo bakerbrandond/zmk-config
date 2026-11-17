@@ -120,17 +120,53 @@ channel (Linux behaved like this). If the Bluetooth link doesn't come back
 after the dongle reboots while it's on USB, `bluetoothctl connect <address>`
 reconnects it.
 
-**macOS and Windows:** use [qmk-hid-host](https://github.com/zzeneg/qmk-hid-host),
-which sends the same packet. Download it from its releases page and put this
-`qmk-hid-host.json` next to it:
+**macOS and Windows:** use [qmk-hid-host](https://github.com/zzeneg/qmk-hid-host).
+It sends the same packet and finds the dongle by product ID over USB or
+Bluetooth. **These steps are untested**: they follow qmk-hid-host's README and
+source, but haven't been tried with this dongle on a Mac or a Windows PC.
+qmk-hid-host is written for QMK keyboards, and it also sends volume and layout
+messages, which the dongle ignores.
+
+Both need a `qmk-hid-host.json` next to the program. `0x615e` is ZMK's product
+ID, used over USB and Bluetooth. A typo in this file makes qmk-hid-host crash
+on start.
 
 ```json
 { "devices": [{ "productId": "0x615e" }] }
 ```
 
-`0x615e` is ZMK's USB product ID. qmk-hid-host is written for QMK keyboards
-and its macOS support is described as partial, so this setup is untested here.
-It also sends volume and layout messages, which the dongle ignores.
+*Windows 11:*
+
+1. Download `qmk-hid-host.exe` and `qmk-hid-host.silent.exe` from the
+   [latest release](https://github.com/zzeneg/qmk-hid-host/releases/tag/latest)
+   into one folder, and add `qmk-hid-host.json` there.
+2. Run `qmk-hid-host.exe` from that folder. It reads the config from the
+   current folder, or use `-c <path>`. Its console shows when it connects, and
+   the clock appears. `qmk-hid-host.exe -p` lists HID devices if it doesn't
+   find the dongle.
+3. To start it at login, press `Win+R`, open `shell:startup` and add a shortcut
+   to `qmk-hid-host.silent.exe` with **Start in** set to that folder. The silent
+   version has no window; stop it from Task Manager.
+
+*macOS* (qmk-hid-host describes its macOS support as partial):
+
+1. Download the macOS build from the same release into a folder (for example
+   `~/qmk-hid-host`), add `qmk-hid-host.json`, and run
+   `cd ~/qmk-hid-host && ./qmk-hid-host`.
+2. If macOS refuses to open it, run `xattr -d com.apple.quarantine qmk-hid-host`.
+   It may also ask for an Input Monitoring permission.
+3. To start it at login, edit the paths in
+   [`scripts/qmk-hid-host.plist`](scripts/qmk-hid-host.plist) and load it:
+
+   ```sh
+   cp scripts/qmk-hid-host.plist ~/Library/LaunchAgents/local.qmk-hid-host.plist
+   launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.qmk-hid-host.plist
+   ```
+
+   Its log goes to `/tmp/qmk-hid-host.log`.
+
+For Bluetooth on either, re-pair the dongle first if it was paired before the
+clock firmware (see above).
 
 Settings in [`config/corne_dongle.conf`](config/corne_dongle.conf):
 
@@ -254,7 +290,7 @@ keymap change and commits the result.
 | `src/prospector_clock.c`, `src/clock_core.h` | The dongle clock and its time logic |
 | `src/reboot_on_fatal.c` | Dongle reboots instead of halting on a fatal error |
 | `src/fonts/` | CaskaydiaCove glyphs converted with lv_font_conv |
-| `scripts/` | Local build, keymap diagram, and the Linux clock sender (`hid-clock.py`, its systemd unit and udev rule) |
+| `scripts/` | Local build, keymap diagram, the Linux clock sender (`hid-clock.py`, its systemd unit and udev rule) and a macOS LaunchAgent for qmk-hid-host |
 | `tests/clock/` | Host tests for the clock logic: `make -C tests/clock test` |
 | `docs/superpowers/` | Design notes and implementation plans for the features above |
 | `docs/experiments/` | Unfinished experiments kept as patches |

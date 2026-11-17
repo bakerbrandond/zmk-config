@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  macOS LaunchAgent that runs qmk-hid-host at login, so it sends the time to the
+  Prospector dongle's clock (see README "Clock"). Untested.
+
+  Replace /Users/YOU/qmk-hid-host with the folder holding the qmk-hid-host binary
+  and qmk-hid-host.json (it reads the config from its working directory), then:
+    cp scripts/qmk-hid-host.plist ~/Library/LaunchAgents/local.qmk-hid-host.plist
+    launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/local.qmk-hid-host.plist
+  Stop it with:
+    launchctl bootout gui/$(id -u)/local.qmk-hid-host
+-->
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>local.qmk-hid-host</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/YOU/qmk-hid-host/qmk-hid-host</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/YOU/qmk-hid-host</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/tmp/qmk-hid-host.log</string>
+    <key>StandardErrorPath</key>
+    <string>/tmp/qmk-hid-host.log</string>
+</dict>
+</plist>
