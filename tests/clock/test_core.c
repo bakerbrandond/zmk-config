@@ -15,6 +15,17 @@ static void test_parse_time_packet(void) {
     assert(h == 14 && m == 32);
 }
 
+/* Linux over Bluetooth (BlueZ HID-over-GATT) passes hidraw's report-ID byte
+   through, so the dongle receives [0x00, 0xAA, hour, minute, ...] */
+static void test_parse_skips_leading_report_id(void) {
+    uint8_t pkt[33] = {0x00, 0xAA, 12, 34};
+    uint8_t h, m;
+    assert(clock_parse(pkt, sizeof(pkt), &h, &m));
+    assert(h == 12 && m == 34);
+    uint8_t shrt[3] = {0x00, 0xAA, 12};
+    assert(!clock_parse(shrt, sizeof(shrt), &h, &m));
+}
+
 static void test_parse_rejects_other_types(void) {
     uint8_t vol[32] = {0xAB, 50};
     uint8_t h, m;
@@ -108,6 +119,7 @@ static void test_format_12h(void) {
 
 int main(void) {
     test_parse_time_packet();
+    test_parse_skips_leading_report_id();
     test_parse_rejects_other_types();
     test_parse_rejects_short_and_out_of_range();
     test_hidden_until_first_packet();
@@ -118,6 +130,6 @@ int main(void) {
     test_new_packet_resets_timeout();
     test_format();
     test_format_12h();
-    printf("clock: 11 tests passed\n");
+    printf("clock: 12 tests passed\n");
     return 0;
 }

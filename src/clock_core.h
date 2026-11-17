@@ -31,8 +31,13 @@ static inline void clock_init(struct clock_state *c) {
     c->base_ms = 0;
 }
 
-// True for a well-formed time packet; fills hour and minute
+// True for a well-formed time packet; fills hour and minute. A leading 0x00
+// (the report ID that Linux passes through over Bluetooth) is skipped.
 static inline bool clock_parse(const uint8_t *data, size_t len, uint8_t *hour, uint8_t *minute) {
+    if (data != NULL && len >= 1 && data[0] == 0x00) {
+        data++;
+        len--;
+    }
     if (data == NULL || len < 3 || data[0] != CLOCK_PACKET_TIME || data[1] > 23 || data[2] > 59) {
         return false;
     }

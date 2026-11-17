@@ -112,6 +112,14 @@ mkdir -p ~/.config/systemd/user && cp scripts/hid-clock.service ~/.config/system
 systemctl --user daemon-reload && systemctl --user enable --now hid-clock
 ```
 
+Over Bluetooth, the script uses the dongle's Bluetooth HID node when USB isn't
+connected. If the dongle was paired with the computer before the clock
+firmware was first flashed, **remove and re-pair it**. Otherwise the computer
+keeps its saved list of the dongle's services and never sees the clock's
+channel (Linux behaved like this). If the Bluetooth link doesn't come back
+after the dongle reboots while it's on USB, `bluetoothctl connect <address>`
+reconnects it.
+
 **macOS and Windows:** use [qmk-hid-host](https://github.com/zzeneg/qmk-hid-host),
 which sends the same packet. Download it from its releases page and put this
 `qmk-hid-host.json` next to it:
