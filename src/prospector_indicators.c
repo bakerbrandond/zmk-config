@@ -1,11 +1,13 @@
 /*
  * Extra indicators for the Prospector display, in the right-hand column:
+ *   - ZMK Studio: open-lock icon, purple while unlocked
  *   - anti-idle (mouse jiggler): sleep-off icon, level with the active layer,
- *     teal when on
- *   - outputs, below the jiggle icon: a USB icon and a Bluetooth icon with
- *     the active profile number (always shown, 1-based). Each is white while
- *     it's the output in use, grey while connected but not in use, and dim
- *     while not connected. ZMK only switches with &out when both are ready.
+ *     yellow when on
+ *   - outputs, below the jiggle icon: a USB icon (orange) and a Bluetooth
+ *     icon with the active profile number (deep blue, always shown, 1-based).
+ *     Each shows its colour while it's the output in use, half strength while
+ *     connected but not in use, and dim while not connected. ZMK only switches
+ *     with &out when both are ready.
  *
  * The Prospector module owns the status screen. Instead of forking it, the
  * linker wraps its zmk_widget_battery_bar_init(), which the module calls once
@@ -56,11 +58,14 @@ LV_FONT_DECLARE(CaskaydiaCove_SemiBold_20);
 // Icons differ in width (11-24 px), so each sits centred in a column this wide
 #define ICON_COL_W 24
 
-#define COLOR_ON 0x8FBCBB     // nord7 frost teal: jiggle on
-#define COLOR_OFF 0x3B4252    // nord1: jiggle off
-#define COLOR_ACTIVE 0x88C0D0 // nord8 frost: output currently in use
-#define COLOR_TEXT 0x81A1C1   // nord9 frost: output connected, not in use
-#define COLOR_DIM COLOR_OFF   // nord1, same as jiggle off: output not connected
+// Each indicator has its own Nord aurora colour while on / in use
+#define COLOR_STUDIO_ON 0xB48EAD // nord15 purple: Studio unlocked
+#define COLOR_JIGGLE_ON 0xEBCB8B // nord13 yellow: jiggler on
+#define COLOR_USB 0xD08770       // nord12 orange: USB output
+#define COLOR_BLE 0x5E81AC       // nord10 deep blue: Bluetooth output and profile number
+#define COLOR_OFF 0x3B4252       // nord1: off, or output not connected
+#define COLOR_BG 0x2E3440        // nord0, the screen background
+#define COLOR_DIM COLOR_OFF
 
 // The Prospector layer roller draws its selected row at its vertical center;
 // the module exports where that is (it moves up when the WPM panel is on).
@@ -86,7 +91,7 @@ static void update_jiggle(void) {
         return;
     }
     last_jiggle = on;
-    lv_obj_set_style_text_color(jiggle_icon, lv_color_hex(on ? COLOR_ON : COLOR_OFF),
+    lv_obj_set_style_text_color(jiggle_icon, lv_color_hex(on ? COLOR_JIGGLE_ON : COLOR_OFF),
                                 LV_PART_MAIN);
 }
 #endif
@@ -102,8 +107,19 @@ static void set_color(lv_obj_t *label, uint32_t color, uint32_t *last) {
     }
 }
 
-static uint32_t output_color(bool in_use, bool ready) {
-    return in_use ? COLOR_ACTIVE : (ready ? COLOR_TEXT : COLOR_DIM);
+// Halfway between a colour and the background, per channel
+static uint32_t half_strength(uint32_t color) {
+    uint32_t out = 0;
+    for (int shift = 0; shift <= 16; shift += 8) {
+        uint32_t c = (color >> shift) & 0xFF, bg = (COLOR_BG >> shift) & 0xFF;
+        out |= ((c + bg) / 2) << shift;
+    }
+    return out;
+}
+
+// In use: the output's colour; connected but not in use: half strength; else dim
+static uint32_t output_color(uint32_t color, bool in_use, bool ready) {
+    return in_use ? color : (ready ? half_strength(color) : COLOR_DIM);
 }
 
 static void update_output(void) {
@@ -116,7 +132,7 @@ static void update_output(void) {
 #else
     bool usb_ready = false;
 #endif
-    set_color(usb_label, output_color(usb_ready && selected == ZMK_TRANSPORT_USB, usb_ready),
+    set_color(usb_label, output_color(COLOR_USB, usb_ready && selected == ZMK_TRANSPORT_USB, usb_ready),
               &last_usb_color);
 
 #if IS_ENABLED(CONFIG_ZMK_BLE)
@@ -127,7 +143,7 @@ static void update_output(void) {
         // 1-based, like ZMK's built-in output widget (BT_SEL 0 shows "1")
         lv_label_set_text_fmt(ble_label, ICON_BLUETOOTH "%d", profile + 1);
     }
-    set_color(ble_label, output_color(ble_ready && selected == ZMK_TRANSPORT_BLE, ble_ready),
+    set_color(ble_label, output_color(COLOR_BLE, ble_ready && selected == ZMK_TRANSPORT_BLE, ble_ready),
               &last_ble_color);
 #endif
 }
@@ -144,7 +160,7 @@ static void update_studio(void) {
         return;
     }
     last_studio = unlocked;
-    lv_obj_set_style_text_color(studio_icon, lv_color_hex(unlocked ? COLOR_ON : COLOR_OFF),
+    lv_obj_set_style_text_color(studio_icon, lv_color_hex(unlocked ? COLOR_STUDIO_ON : COLOR_OFF),
                                 LV_PART_MAIN);
 }
 #endif
