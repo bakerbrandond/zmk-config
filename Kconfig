@@ -17,6 +17,10 @@ config PROSPECTOR_CLOCK
       app on the computer (qmk-hid-host, or scripts/hid-clock.py on Linux) via
       the zmk-raw-hid module; without one the clock stays hidden.
 
+config PROSPECTOR_CLOCK_12H
+    bool "12-hour clock (h:MM AM/PM) instead of 24-hour HH:MM"
+    depends on PROSPECTOR_CLOCK
+
 config PROSPECTOR_CLOCK_TIMEOUT_S
     int "Hide the clock after this many seconds without a time update"
     default 180

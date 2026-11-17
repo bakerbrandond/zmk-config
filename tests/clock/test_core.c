@@ -1,6 +1,7 @@
 /* Host tests for the dongle clock model. Run: make -C tests/clock test */
 #include <assert.h>
 #include <stdio.h>
+#include <string.h>
 
 #include "clock_core.h"
 
@@ -86,6 +87,25 @@ static void test_format(void) {
     assert(buf[0] == '2' && buf[1] == '3' && buf[3] == '5' && buf[4] == '9');
 }
 
+static void expect_12h(int minutes, const char *want) {
+    char buf[CLOCK_TEXT_MAX];
+    clock_format_12h(minutes, buf);
+    if (strcmp(buf, want) != 0) {
+        printf("12h %d: got \"%s\", want \"%s\"\n", minutes, buf, want);
+        assert(0);
+    }
+}
+
+static void test_format_12h(void) {
+    expect_12h(0, "12:00 AM");
+    expect_12h(5, "12:05 AM");
+    expect_12h(9 * 60 + 30, "9:30 AM");
+    expect_12h(11 * 60 + 59, "11:59 AM");
+    expect_12h(12 * 60, "12:00 PM");
+    expect_12h(13 * 60 + 7, "1:07 PM");
+    expect_12h(23 * 60 + 59, "11:59 PM");
+}
+
 int main(void) {
     test_parse_time_packet();
     test_parse_rejects_other_types();
@@ -97,6 +117,7 @@ int main(void) {
     test_hides_when_host_goes_quiet();
     test_new_packet_resets_timeout();
     test_format();
-    printf("clock: 10 tests passed\n");
+    test_format_12h();
+    printf("clock: 11 tests passed\n");
     return 0;
 }

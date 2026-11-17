@@ -68,7 +68,7 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
   - Bluetooth output with the active profile number
 
   Each one is lit, dim or off to show its state.
-- **Clock**: 24-hour `HH:MM` above the layer name, sent by the computer.
+- **Clock**: 24-hour `HH:MM` (or 12-hour) above the layer name, sent by the computer.
   It's hidden when no computer is sending the time (see [Clock](#clock)).
 - **Brightness key** (Function + D). There's no ambient light sensor, so the
   backlight uses a fixed level, which the key steps through.
@@ -124,8 +124,13 @@ which sends the same packet. Download it from its releases page and put this
 and its macOS support is described as partial, so this setup is untested here.
 It also sends volume and layout messages, which the dongle ignores.
 
-To leave the clock out, set `CONFIG_PROSPECTOR_CLOCK=n` in
-[`config/corne_dongle.conf`](config/corne_dongle.conf).
+Settings in [`config/corne_dongle.conf`](config/corne_dongle.conf):
+
+| Setting | Effect |
+| --- | --- |
+| `CONFIG_PROSPECTOR_CLOCK_12H=y` | 12-hour time, e.g. `2:32 PM`, instead of `14:32` |
+| `CONFIG_PROSPECTOR_CLOCK_TIMEOUT_S=180` | Seconds without an update before the clock hides |
+| `CONFIG_PROSPECTOR_CLOCK=n` | No clock |
 
 ## nice!view halves
 

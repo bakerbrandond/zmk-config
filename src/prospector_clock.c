@@ -1,5 +1,6 @@
 /*
- * 24-hour clock on the Prospector display, above the active layer name.
+ * Clock on the Prospector display, above the active layer name: 24-hour HH:MM,
+ * or h:MM AM/PM with CONFIG_PROSPECTOR_CLOCK_12H.
  *
  * The dongle has no real-time clock, so the time comes from the computer: a
  * companion app (qmk-hid-host on Windows/macOS/Linux, or scripts/hid-clock.py
@@ -64,8 +65,12 @@ static void tick(lv_timer_t *timer) {
         lv_obj_add_flag(label, LV_OBJ_FLAG_HIDDEN);
         return;
     }
-    char text[6];
-    clock_format(minutes, text);
+    char text[CLOCK_TEXT_MAX];
+    if (IS_ENABLED(CONFIG_PROSPECTOR_CLOCK_12H)) {
+        clock_format_12h(minutes, text);
+    } else {
+        clock_format(minutes, text);
+    }
     lv_label_set_text(label, text);
     lv_obj_clear_flag(label, LV_OBJ_FLAG_HIDDEN);
 }

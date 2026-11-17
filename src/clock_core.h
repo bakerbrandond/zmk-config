@@ -17,6 +17,7 @@
 
 #define CLOCK_PACKET_TIME 0xAA
 #define CLOCK_HIDDEN (-1)
+#define CLOCK_TEXT_MAX 9 // "12:59 PM" plus the terminator
 
 struct clock_state {
     bool valid;        // a time has been received
@@ -67,4 +68,22 @@ static inline void clock_format(int minutes, char buf[6]) {
     buf[3] = (char)('0' + m / 10);
     buf[4] = (char)('0' + m % 10);
     buf[5] = '\0';
+}
+
+// 12-hour "h:MM AM" / "h:MM PM" into buf (CLOCK_TEXT_MAX bytes), no leading zero
+static inline void clock_format_12h(int minutes, char buf[CLOCK_TEXT_MAX]) {
+    int h24 = minutes / 60, m = minutes % 60;
+    int h = h24 % 12 == 0 ? 12 : h24 % 12;
+    int i = 0;
+    if (h >= 10) {
+        buf[i++] = '1';
+    }
+    buf[i++] = (char)('0' + h % 10);
+    buf[i++] = ':';
+    buf[i++] = (char)('0' + m / 10);
+    buf[i++] = (char)('0' + m % 10);
+    buf[i++] = ' ';
+    buf[i++] = h24 < 12 ? 'A' : 'P';
+    buf[i++] = 'M';
+    buf[i] = '\0';
 }
