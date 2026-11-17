@@ -6,6 +6,10 @@ endif()
 
 if(CONFIG_NICE_VIEW_SNOW)
   target_sources(app PRIVATE src/nice_view_snow.c)
+  if(CONFIG_NICE_VIEW_SNOW_STATUS)
+    target_sources(app PRIVATE src/nice_view_status.c src/fonts/nv_status_icons_20.c
+                               src/fonts/nv_status_digits_16.c)
+  endif()
   # Hook the stock nice!view status widget (see src/nice_view_snow.c)
   zephyr_ld_options(-Wl,--wrap=zmk_widget_status_init)
 endif()

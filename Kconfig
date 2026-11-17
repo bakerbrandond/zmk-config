@@ -13,6 +13,13 @@ config NICE_VIEW_SNOW
     default y
     depends on SHIELD_NICE_VIEW && NICE_VIEW_WIDGET_STATUS && ZMK_SPLIT && !ZMK_SPLIT_ROLE_CENTRAL
 
+config NICE_VIEW_SNOW_STATUS
+    bool "CaskaydiaCove battery and connection icons on the nice!view"
+    help
+      Draws battery and connection icons over the top 20 rows of the snow
+      scene. Off by default: the Prospector dongle already shows both.
+    depends on NICE_VIEW_SNOW
+
 choice NICE_VIEW_SNOW_SCENE
     prompt "Scene the snow falls on"
     depends on NICE_VIEW_SNOW
