@@ -91,7 +91,9 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
     screen flaps.
   - Best scores for both modes are saved.
   - Leave with **Q + P** together.
-- **ZMK Studio** over the dongle's USB. Unlock it with Function + M.
+- **ZMK Studio** over the dongle's USB. Unlock it with Function + M. Studio
+  over Bluetooth is switched off (`CONFIG_ZMK_STUDIO_TRANSPORT_BLE=n`) to save
+  RAM.
 - **Mouse jiggler** from [zmk-anti-idle](https://github.com/kbrd-space/zmk-anti-idle):
   every 30 s while it's on, the pointer moves down and back up.
 - **Strict output**: keys go only to the output you selected (Function + L
@@ -107,6 +109,11 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
   and each announcement was enough to wake a sleeping Mac paired over
   Bluetooth. Hosts still see the battery service, so nothing needs re-pairing;
   the level just never changes.
+- **RAM headroom**: the dongle used 94% of its 256 KB RAM, mostly the screen's
+  draw buffer, which held a whole 280×240 frame (134 KB). It's now half a frame
+  (`CONFIG_LV_Z_VDB_SIZE=50`), so full-screen changes draw in two passes.
+  Together with Studio over Bluetooth being off, that brings RAM down to about
+  176 KB (67%), with no visible difference.
 
 ## Clock
 
