@@ -1,3 +1,13 @@
+config QUIET_DONGLE_BATTERY
+    bool "Don't announce the central's own battery level to computers"
+    depends on BT_BAS && ZMK_BATTERY_REPORTING
+    help
+      For a dongle without a battery: its Bluetooth battery level stays
+      fixed instead of being updated, so it never sends battery
+      notifications. Those go to every connected computer, including ones on
+      other profiles, and can wake one that's asleep. The keyboard halves'
+      battery levels are unaffected.
+
 config STRICT_OUTPUT
     bool "Send keys only to the selected output, never fall back to the other"
     default y

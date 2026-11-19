@@ -37,3 +37,8 @@ if(CONFIG_STRICT_OUTPUT)
       -Wl,--wrap=zmk_hog_send_mouse_report)
   endif()
 endif()
+
+if(CONFIG_QUIET_DONGLE_BATTERY)
+  target_sources(app PRIVATE src/quiet_battery.c)
+  zephyr_ld_options(-Wl,--wrap=bt_bas_set_battery_level)
+endif()
