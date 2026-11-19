@@ -94,6 +94,19 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
 - **ZMK Studio** over the dongle's USB. Unlock it with Function + M.
 - **Mouse jiggler** from [zmk-anti-idle](https://github.com/kbrd-space/zmk-anti-idle):
   every 30 s while it's on, the pointer moves down and back up.
+- **Strict output**: keys go only to the output you selected (Function + L
+  toggles USB and Bluetooth). Stock ZMK falls back to the other output when
+  the selected one isn't connected, so with Bluetooth selected and its host
+  gone, keys would go to whatever the dongle is plugged into over USB, and
+  would even wake a sleeping USB host. Here they're dropped until the selected
+  output is back. On by default (`CONFIG_STRICT_OUTPUT`) for any central with
+  both USB and Bluetooth.
+- **Quiet battery**: the dongle doesn't announce its own battery level over
+  Bluetooth (`CONFIG_QUIET_DONGLE_BATTERY=y` in
+  [`config/corne_dongle.conf`](config/corne_dongle.conf)). It has no battery,
+  and each announcement was enough to wake a sleeping Mac paired over
+  Bluetooth. Hosts still see the battery service, so nothing needs re-pairing;
+  the level just never changes.
 
 ## Clock
 
@@ -300,10 +313,13 @@ keymap change and commits the result.
 | `src/nice_view_status.c` | Optional battery/connection icons for the halves |
 | `src/prospector_indicators.c` | Studio, jiggler, USB and Bluetooth indicators on the dongle |
 | `src/prospector_clock.c`, `src/clock_core.h` | The dongle clock and its time logic |
+| `src/strict_output.c`, `src/strict_output_core.h` | Strict output: reports go only to the selected output |
+| `src/quiet_battery.c` | Dongle doesn't announce a battery level over Bluetooth |
 | `src/reboot_on_fatal.c` | Dongle reboots instead of halting on a fatal error |
 | `src/fonts/` | CaskaydiaCove glyphs converted with lv_font_conv |
 | `scripts/` | Local build, keymap diagram, the Linux clock sender (`hid-clock.py`, its systemd unit and udev rule) and a macOS LaunchAgent for qmk-hid-host |
 | `tests/clock/` | Host tests for the clock logic: `make -C tests/clock test` |
+| `tests/strict_output/` | Host tests for the strict output logic: `make -C tests/strict_output test` |
 | `docs/superpowers/` | Design notes and implementation plans for the features above |
 | `docs/experiments/` | Unfinished experiments kept as patches |
 
