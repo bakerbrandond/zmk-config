@@ -32,6 +32,9 @@
 #endif
 #if IS_ENABLED(CONFIG_PROSPECTOR_OUTPUT_INDICATOR)
 #include <zmk/endpoints.h>
+#if IS_ENABLED(CONFIG_STRICT_OUTPUT)
+#include "strict_output.h"
+#endif
 #if IS_ENABLED(CONFIG_ZMK_USB)
 #include <zmk/usb.h>
 #endif
@@ -125,7 +128,12 @@ static uint32_t output_color(uint32_t color, bool in_use, bool ready) {
 static void update_output(void) {
     static uint32_t last_usb_color, last_ble_color;
     static int last_profile = -1;
+#if IS_ENABLED(CONFIG_STRICT_OUTPUT)
+    // Keys only ever go to the user's choice, so that's the one "in use"
+    enum zmk_transport selected = strict_output_selected();
+#else
     enum zmk_transport selected = zmk_endpoints_selected().transport;
+#endif
 
 #if IS_ENABLED(CONFIG_ZMK_USB)
     bool usb_ready = zmk_usb_is_hid_ready();

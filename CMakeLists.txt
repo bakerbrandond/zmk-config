@@ -20,3 +20,20 @@ endif()
 if(CONFIG_REBOOT_ON_FATAL_ERROR)
   target_sources(app PRIVATE src/reboot_on_fatal.c)
 endif()
+
+if(CONFIG_STRICT_OUTPUT)
+  target_sources(app PRIVATE src/strict_output.c)
+  # Follow the selected output and drop reports for the other (see src/strict_output.c)
+  zephyr_ld_options(
+    -Wl,--wrap=zmk_endpoints_select_transport
+    -Wl,--wrap=zmk_endpoints_toggle_transport
+    -Wl,--wrap=zmk_usb_hid_send_keyboard_report
+    -Wl,--wrap=zmk_usb_hid_send_consumer_report
+    -Wl,--wrap=zmk_hog_send_keyboard_report
+    -Wl,--wrap=zmk_hog_send_consumer_report)
+  if(CONFIG_ZMK_POINTING)
+    zephyr_ld_options(
+      -Wl,--wrap=zmk_usb_hid_send_mouse_report
+      -Wl,--wrap=zmk_hog_send_mouse_report)
+  endif()
+endif()

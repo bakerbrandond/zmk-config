@@ -1,3 +1,13 @@
+config STRICT_OUTPUT
+    bool "Send keys only to the selected output, never fall back to the other"
+    default y
+    depends on ZMK_USB && ZMK_BLE && (!ZMK_SPLIT || ZMK_SPLIT_ROLE_CENTRAL)
+    help
+      Stock ZMK sends to USB when Bluetooth is selected but its host isn't
+      connected (and the other way round), which can type into the wrong
+      computer or wake a sleeping one. With this on, reports for the
+      unselected output are dropped until the selected one reconnects.
+
 config PROSPECTOR_ANTI_IDLE_INDICATOR
     bool "Show anti-idle (jiggler) state on the Prospector display"
     default y
