@@ -1,3 +1,7 @@
+#define PET_TOGGLE 0
+#define PET_FEED 1
+#define PET_PLAY 2
+
 // homerow mods
 / {
     hrm: hrm {
@@ -26,6 +30,19 @@
 
     zflap: zappy_flap {
             compatible = "zmk,behavior-zappy-flap";
+            #binding-cells = <0>;
+        };
+
+    // Clackling, the typing pet (Prospector dongle). &pet CMD LAYER: swap the
+    // WPM panel for the pet, feed it, or start the mini-game on capture LAYER.
+    // Drivers are built only on the dongle with CONFIG_PROSPECTOR_TYPING_PET=y.
+    pet: typing_pet {
+            compatible = "zmk,behavior-pet";
+            #binding-cells = <2>;
+        };
+
+    petkey: typing_pet_key {
+            compatible = "zmk,behavior-pet-key";
             #binding-cells = <0>;
         };
 

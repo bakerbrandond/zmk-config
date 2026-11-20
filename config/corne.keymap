@@ -24,6 +24,7 @@
 #define FUN 3
 #define MOS 4
 #define ZAP 5  // Zappy Birds game layer (hidden from the Prospector layer list)
+#define PET 6  // typing pet mini-game layer (hidden from the Prospector layer list)
 
 #include "behaviors.dtsi"
 
@@ -114,7 +115,7 @@
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
              ___           &kp F11      &kp F12        &pbl       &sys_reset    &bootloader       &bootloader   &sys_reset    &aim AIM_TOG  &out OUT_TOG  &zappy ZAP      ___
      // ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
-                                     _BT_SEL_KEYS_                                                           &studio_unlock     ___           ___           ___          ___
+                                     _BT_SEL_KEYS_                                                           &studio_unlock     &pet PET_TOGGLE 0 &pet PET_FEED 0 &pet PET_PLAY PET  ___
      // ╰─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤   ├─────────────┼─────────────┼─────────────┼─────────────┼─────────────┼─────────────┤
                                                         ___           ___           ___               ___           ___           ___
      //                                           ╰─────────────┴─────────────┴─────────────╯   ╰─────────────┴─────────────┴─────────────╯
@@ -144,6 +145,18 @@
              &zflap        &zflap        &zflap        &zflap        &zflap        &zflap            &zflap        &zflap        &zflap        &zflap        &zflap        &zflap
              &zflap        &zflap        &zflap        &zflap        &zflap        &zflap            &zflap        &zflap        &zflap        &zflap        &zflap        &zflap
                                                     &zflap        &zflap        &zflap            &zflap        &zflap        &zflap
+                        >;
+                };
+
+                pet_layer {
+                        display-name = "Pet";
+                        // Typing pet mini-game, on only for its ~10 s: a key on the left or
+                        // right half guesses that side; nothing reaches the computer.
+                        bindings = <
+             &petkey       &petkey       &petkey       &petkey       &petkey       &petkey           &petkey       &petkey       &petkey       &petkey       &petkey       &petkey
+             &petkey       &petkey       &petkey       &petkey       &petkey       &petkey           &petkey       &petkey       &petkey       &petkey       &petkey       &petkey
+             &petkey       &petkey       &petkey       &petkey       &petkey       &petkey           &petkey       &petkey       &petkey       &petkey       &petkey       &petkey
+                                                    &petkey       &petkey       &petkey           &petkey       &petkey       &petkey
                         >;
                 };
         };

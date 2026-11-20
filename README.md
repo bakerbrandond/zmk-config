@@ -48,6 +48,9 @@ and redrawn by CI whenever the keymap changes (see [Keymap diagram](#keymap-diag
   | K | Toggle the mouse jiggler |
   | L | Toggle output between USB and Bluetooth |
   | ; | Start Zappy Birds |
+  | , | Swap the WPM panel for Clackling, the typing pet, and back |
+  | . | Feed the pet |
+  | / | Pet mini-game: guess which side it's hiding on |
   | Z X C V B | Bluetooth profile 1–5 |
   | N | Clear the current Bluetooth profile |
   | M | Unlock ZMK Studio |
@@ -91,6 +94,22 @@ Features from the [fork](https://github.com/bakerbrandond/prospector-zmk-module)
     screen flaps.
   - Best scores for both modes are saved.
   - Leave with **Q + P** together.
+- **Clackling, a typing pet**, which Function + , swaps in for the WPM panel
+  (and back; the choice is saved). You keep typing to the computer as normal.
+  - It bounces when you type fast, sits calmly at a steady pace, and falls
+    asleep after 2 minutes without a key press.
+  - It grows with your lifetime key presses: it hatches at 500, then becomes a
+    Child at 10k, a Teen at 100k and an Adult at 1M. Each stage gets a little
+    celebration.
+  - It gets hungry over about a day of the dongle being plugged in. Feed it
+    with Function + . A hungry pet grows at half speed, and nothing worse
+    happens: it never dies, and time unplugged doesn't count.
+  - Function + / starts a 10-second mini-game. It hides on the left or the
+    right, and you guess by pressing any key on that half. Those keys don't
+    reach the computer. Three right out of five cheers it up for 5 minutes.
+  - The panel shows its stage, mood hearts, fullness, your WPM, your key count
+    and a bar towards the next stage. Progress is saved every 15 minutes and
+    on each stage-up.
 - **ZMK Studio** over the dongle's USB. Unlock it with Function + M. Studio
   over Bluetooth is switched off (`CONFIG_ZMK_STUDIO_TRANSPORT_BLE=n`) to save
   RAM.
